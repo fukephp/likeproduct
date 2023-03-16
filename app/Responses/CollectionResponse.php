@@ -2,7 +2,6 @@
 namespace App\Responses;
 
 use Illuminate\Contracts\Support\Responsable;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use JustSteveKing\StatusCode\Http;
 use Symfony\Component\HttpFoundation\JsonResponse;

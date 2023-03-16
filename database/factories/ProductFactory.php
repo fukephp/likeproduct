@@ -20,7 +20,7 @@ class ProductFactory extends Factory
         return [
             'title' => $this->faker->text(30),
             'image' => $this->faker->imageUrl(),
-            'user_id' => User::find(1)
+            'user_id' => User::all()->first()
         ];
     }
 }
