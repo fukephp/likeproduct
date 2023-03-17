@@ -22,8 +22,11 @@ class ProductTest extends TestCase
 
     public function testHasProductListRouteApi()
     {
+        // preperation
+        $user = $this->createUser();
+
         // action
-        $response = $this->getJson('api/products');
+        $response = $this->actingAs($user, 'sanctum')->getJson('api/products');
 
         $status = Http::OK;
 
@@ -39,7 +42,7 @@ class ProductTest extends TestCase
         $product = $this->getProductForUserRaw($user);
 
         // action
-        $response = $this->postJson('api/products', $product);
+        $response = $this->actingAs($user, 'sanctum')->postJson('api/products', $product);
 
         $status = Http::CREATED;
 
@@ -54,7 +57,7 @@ class ProductTest extends TestCase
         $product = $this->createProductForUser($user);
 
         // action
-        $response = $this->getJson("api/products/{$product->id}");
+        $response = $this->actingAs($user, 'sanctum')->getJson("api/products/{$product->id}");
 
         $this->checkFirstProductData($response, $product);
 
@@ -76,7 +79,7 @@ class ProductTest extends TestCase
         ];
 
         // action
-        $response = $this->putJson("api/products/{$product->id}", $data);
+        $response = $this->actingAs($user, 'sanctum')->putJson("api/products/{$product->id}", $data);
 
         $status = Http::ACCEPTED;
 
@@ -91,7 +94,7 @@ class ProductTest extends TestCase
         $product = $this->createProductForUser($user);
 
         // action
-        $response = $this->deleteJson("api/products/{$product->id}");
+        $response = $this->actingAs($user, 'sanctum')->deleteJson("api/products/{$product->id}");
 
         $status = Http::NO_CONTENT;
 
@@ -108,24 +111,5 @@ class ProductTest extends TestCase
                     ->etc()
             )->etc()
         );
-    }
-
-    public function createUser(): User
-    {
-        return User::factory()->create();
-    }
-
-    public function createProductForUser(User $user): Product
-    {
-        return Product::factory()
-            ->for($user)
-            ->create();
-    }
-
-    public function getProductForUserRaw(User $user): array
-    {
-        return Product::factory()
-            ->for($user)
-            ->raw();
     }
 }

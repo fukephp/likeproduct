@@ -12,7 +12,11 @@ abstract class TestCase extends BaseTestCase
 
     public function createUser(): User
     {
-        return User::factory()->create();
+        $user = User::factory()->create();
+
+        $user->createToken('MyApp')->plainTextToken;
+
+        return $user;
     }
 
     public function createUserRaw(): array
