@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::controller(RegisterController::class)->group(function(){
     Route::post('register', 'register');
     Route::post('login', 'login');
-    Route::post('/sanctum/token/create', 'createToken');
+    Route::post('/token/create', 'createToken');
 });
 
 Route::middleware('auth:sanctum')->group( function () {

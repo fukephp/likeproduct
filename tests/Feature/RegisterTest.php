@@ -48,4 +48,20 @@ class RegisterTest extends TestCase
 
         $response->assertStatus($status->value);
     }
+
+    public function testCanTokenCreate()
+    {
+        $user = $this->createUser();
+
+        $data = [
+            'email' => $user->email,
+            'password' => 'password'
+        ];
+
+        $response = $this->postJson('/api/token/create', $data);
+
+        $status = Http::OK;
+
+        $response->assertStatus($status->value);
+    }
 }
