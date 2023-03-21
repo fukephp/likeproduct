@@ -178,7 +178,8 @@ return [
         /*
         * Components Service Provides
         */
-        App\Providers\UserComponentServiceProvider::class
+        App\Providers\UserComponentServiceProvider::class,
+        App\Providers\ProductComponentServiceProvider::class,
     ],
 
     /*

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\ProductComponent;
 use App\Http\Resources\ProdcutResource;
 use App\Models\Product;
 use App\Responses\CollectionResponse;
@@ -30,7 +31,7 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $product = Product::create($request->only(['title', 'image', 'user_id']));
+        $product = app(ProductComponent::class)->store($request);
 
         return new CollectionResponse(
             data: ProdcutResource::collection(
@@ -42,9 +43,9 @@ class ProductController extends Controller
 
     public function update(Product $product, Request $request)
     {
-        $status = $product->update($request->only(['title', 'image', 'user_id']));
+        $updated = app(ProductComponent::class)->update($request, $product);
 
-        if($status)
+        if($updated)
             return new CollectionResponse(
                 data: ProdcutResource::collection(
                     resource: Product::query()->where('id', $product->id)->get()
