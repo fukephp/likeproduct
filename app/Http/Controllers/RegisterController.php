@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\UserComponent;
 use App\Http\Requests\CreateTokenRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
-use JustSteveKing\StatusCode\Http;
 
 class RegisterController extends Controller
 {
+    protected const TOKEN_NAME = 'MyApp';
     /**
      * Register api
      *
@@ -21,10 +18,9 @@ class RegisterController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-        $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['token'] = $user->createToken('MyApp')->plainTextToken;
+        $user = app(UserComponent::class)->store($request);
+
+        $success['token'] = $user->createToken(self::TOKEN_NAME)->plainTextToken;
         $success['name'] = $user->name;
 
         return $this->sendResponse($success, __('User register successfully.'));
@@ -37,26 +33,27 @@ class RegisterController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            $user = Auth::user();
-            $success['token'] = $request->user()->createToken('myApp');
+        $user = app(UserComponent::class)->login($request);
+
+        if($user) {
+            $success['token'] = $request->user()->createToken(self::TOKEN_NAME);
             $success['name'] = $user->name;
 
             return $this->sendResponse($success, 'User login successfully.');
-        }
-        else{
-            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
+
+        } else {
+
         }
     }
 
     public function createToken(CreateTokenRequest $request)
     {
-        $user = User::where('email', $request->email)->first();
+        $user = app(UserComponent::class)->findUserWithPassword($request);
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if(!$user) {
             return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
 
-        return $user->createToken($request->device_name)->plainTextToken;
+        return $user->createToken(self::TOKEN_NAME)->plainTextToken;
     }
 }
