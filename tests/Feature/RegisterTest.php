@@ -31,7 +31,7 @@ class RegisterTest extends TestCase
 
     public function testCanUserRegister()
     {
-        $this->withExceptionHandling();
+        $this->withoutExceptionHandling();
 
         $user = $this->createUserRaw();
 

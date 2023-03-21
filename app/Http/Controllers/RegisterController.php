@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateTokenRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use JustSteveKing\StatusCode\Http;
 
 class RegisterController extends Controller
@@ -44,5 +47,16 @@ class RegisterController extends Controller
         else{
             return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
+    }
+
+    public function createToken(CreateTokenRequest $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
+        }
+
+        return $user->createToken($request->device_name)->plainTextToken;
     }
 }
