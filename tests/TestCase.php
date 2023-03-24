@@ -14,7 +14,7 @@ abstract class TestCase extends BaseTestCase
     {
         $user = User::factory()->create();
 
-        $user->createToken('MyApp')->plainTextToken;
+        $user->createToken($user->name)->plainTextToken;
 
         return $user;
     }

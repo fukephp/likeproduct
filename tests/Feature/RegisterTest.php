@@ -64,4 +64,21 @@ class RegisterTest extends TestCase
 
         $response->assertStatus($status->value);
     }
+
+    /**
+     * Test if user can login with email that is not used
+     */
+    public function testCanNonUserLogin()
+    {
+        $data = [
+            'email' => 'example@email.com',
+            'password' => 'password'
+        ];
+
+        $response = $this->postJson('/api/login', $data);
+
+        $status = Http::UNPROCESSABLE_ENTITY;
+
+        $response->assertJsonValidationErrors('email')->assertStatus($status->value);
+    }
 }

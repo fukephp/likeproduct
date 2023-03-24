@@ -13,18 +13,22 @@ class ProductController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+
         return new CollectionResponse(
             data: ProdcutResource::collection(
-                resource: Product::query()->get(),
+                resource: $user->products,
             ),
         );
     }
 
     public function show(Product $product)
     {
+        $user = auth()->user();
+
         return new CollectionResponse(
             data: ProdcutResource::collection(
-                resource: Product::query()->where('id', $product->id)->get()
+                resource: Product::query()->where('id', $product->id)->where('user_id', $user->id)->get()
             )
         );
     }

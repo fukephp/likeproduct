@@ -20,7 +20,7 @@ class UserComponent extends BaseComponent {
         return $user;
     }
 
-    public function login(LoginRequest $request): User
+    public function login(LoginRequest $request): User|bool
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = Auth::user();

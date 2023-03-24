@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    protected const TOKEN_NAME = 'MyApp';
     /**
      * Register api
      *
@@ -20,7 +19,7 @@ class RegisterController extends Controller
     {
         $user = app(UserComponent::class)->store($request);
 
-        $success['token'] = $user->createToken(self::TOKEN_NAME)->plainTextToken;
+        $success['token'] = $user->createToken($user->name)->plainTextToken;
         $success['name'] = $user->name;
 
         return $this->sendResponse($success, __('User register successfully.'));
@@ -36,7 +35,7 @@ class RegisterController extends Controller
         $user = app(UserComponent::class)->login($request);
 
         if($user) {
-            $success['token'] = $request->user()->createToken(self::TOKEN_NAME);
+            $success['token'] = $request->user()->createToken($user->name);
             $success['name'] = $user->name;
 
             return $this->sendResponse($success, 'User login successfully.');
@@ -54,6 +53,6 @@ class RegisterController extends Controller
             return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
 
-        return $user->createToken(self::TOKEN_NAME)->plainTextToken;
+        return $user->createToken($user->name)->plainTextToken;
     }
 }
